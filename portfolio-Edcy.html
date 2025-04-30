@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personal website of Edcy, an imaginative digital playground for creative exploration.">
+    <title>Portfolio Edcy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset & base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            transition: background 0.5s, color 0.5s;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --dark-bg: #121212;
+            --dark-fg: #eee;
+            --light-bg: #fefefe;
+            --light-fg: #222;
+            --bg: var(--light-bg);
+            --fg: var(--light-fg);
+            --card-bg: rgba(255 255 255 / 0.1);
+            --card-shadow: 0 0 10px rgba(0 0 0 / 0.1);
+            --blur-bg: rgba(255 255 255 / 0.15);
+            --gradient: linear-gradient(270deg, #2ecc71, #3498db, #9b59b6, #e74c3c, #f1c40f);
+            --transition-base: 0.3s ease;
+        }
+
+        body.dark {
+            --bg: var(--dark-bg);
+            --fg: var(--dark-fg);
+            --card-bg: rgba(0 0 0 / 0.3);
+            --card-shadow: 0 0 15px rgba(46 204 113 / 0.5);
+            --blur-bg: rgba(0 0 0 / 0.25);
+        }
+
+        header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            background: #181818;
+            padding: 1rem;
+        }
+
+        nav a {
+            color: #f1f1f1;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #00d4ff;
+        }
+
+        section {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        footer {
+            background: #121212;
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .social-icons a {
+            color: #888;
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #00d4ff;
+        }
+
+        /* Custom cursor */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.3s ease;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        a:hover ~ #cursor,
+        button:hover ~ #cursor,
+        .card:hover ~ #cursor {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+        }
+
+        /* Profile Edcy */
+        .Edcy-profile {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .Edcy-profile img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .Edcy-profile:hover img {
+            transform: rotate(360deg) scale(1.1);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .Edcy-bio {
+            position: relative;
+            background: var(--blur-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            max-width: 280px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .Edcy-profile:hover .Edcy-bio {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .Edcy-bio h3 {
+            margin: 0 0 0.3rem 0;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .Edcy-bio p {
+            margin: 0.15rem 0;
+            font-weight: 400;
+            color: var(--fg);
+            font-size: 0.9rem;
+        }
+
+        /* Experience Grid */
+        main.experience-grid {
+            margin: 120px 20px 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .card img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.9);
+            transition: filter 0.3s ease;
+        }
+
+        .card:hover img {
+            filter: brightness(1);
+        }
+
+        .card-content {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 0 0 0.5rem 0;
+            color: var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--fg);
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+
+        .card-tags {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: var(--dark-bg);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            user-select: none;
+        }
+
+        /* Modal */
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 11000;
+            backdrop-filter: blur(5px);
+        }
+
+        #modal.active {
+            display: flex;
+        }
+
+        #modal-content {
+            background: var(--bg);
+            color: var(--fg);
+            border-radius: 12px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px var(--primary);
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        #modal-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Animated gradient text */
+        .gradient-text {
+            background: var(--gradient);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientAnim 8s ease infinite;
+        }
+
+        @keyframes gradientAnim {
+            0% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0% 50%
+            }
+        }
+
+        /* Parallax scrolling */
+        main.experience-grid {
+            perspective: 1000px;
+        }
+
+        .card {
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .card:hover {
+            transform: scale(1.05) translateZ(30px);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .Edcy-bio {
+                display: none;
+            }
+
+            main.experience-grid {
+                margin: 100px 10px 20px 10px;
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ====== Component Library ====== */
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: -1;
+        }
+
+        .card:hover::before {
+            opacity: 0.1;
+        }
+
+        /* ====== Layout Utilities ====== */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .flow > * + * {
+            margin-top: 1rem;
+        }
+
+        /* ====== Responsive Navigation ====== */
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .nav-links.active {
+            max-height: 500px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 0.5rem;
+            }
+        }
+
+        /* ====== Enhanced Card Interactions ====== */
+        .card {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card:hover .card-inner {
+            transform: rotateY(10deg) rotateX(5deg);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 30px var(--primary);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+        }
+
+        .card:hover::after {
+            opacity: 0.3;
+        }
+
+        /* ====== Modern Scroll Behavior ====== */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        section {
+            scroll-margin-top: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Portfolio Edcy</h1>
+        <p>Just a personal playground to have fun 🌌</p>
+    </header>
+
+    <nav>
+        <a href="#projects">Projects</a>
+        <a href="#experiments">Experiments</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="Edcy-profile" tabindex="0" aria-label="Profil Reg & Riko">
+        <img src="../webkursus/aset/reg & riko.jpg" alt="Logo Reg & Riko" loading="lazy" width="64" height="64" />
+        <div class="Edcy-bio" role="region" aria-live="polite">
+            <h3 class="gradient-text">Reg & Riko</h3>
+            <p>Pengembang Web & Penjelajah Digital</p>
+            <p>📍 Kota Kreatif</p>
+            <p>🔗 <a href="https://regriko.dev" target="_blank" rel="noopener noreferrer">regriko.dev</a> | 📧 <a href="mailto:hello@regriko.com">hello@regriko.com</a></p>
+        </div>
+    </div>
+
+    <section id="projects">
+        <div class="card">
+            <h2>Projects</h2>
+            <p>Creative stuff in development – from mini tools to weird web experiments.</p>
+        </div>
+    </section>
+
+    <section id="experiments">
+        <div class="card">
+            <h2>Experiments</h2>
+            <p>Sandbox ideas, CSS illusions, canvas chaos, AI-driven randomness... because why not?</p>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="card">
+            <h2>About Me</h2>
+            <p>Hey! I'm Edcy. This site is my digital sketchpad, testing ground, and curiosity zone. Feel free to poke around!</p>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="card">
+            <h2>Contact</h2>
+            <p>Let's connect or collab on something fun! Drop me a message below:</p>
+            <p>Email: <a href="mailto:Edcy@fun.dev">Edcy@fun.dev</a></p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-codepen"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2025 Portfolio Edcy — Crafted with curiosity ⚡
+    </footer>
+
+    <main class="experience-grid" aria-label="Pengalaman">
+        <!-- Example cards -->
+        <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek A" data-desc="Membangun aplikasi web modern dengan React dan Node.js." data-tags="React,Node.js,Web">
+            <img src="../webkursus/aset/Reg incenarator mode.jpg" alt="Thumbnail Proyek A" loading="lazy" />
+            <div class="card-content">
+                <h4 class="card-title">Proyek A</h4>
+                <p class="card-desc">Membangun aplikasi web modern dengan React dan Node.js.</p>
+                <div class="card-tags">
+                    <span class="tag">React</span>
+                    <span class="tag">Node.js</span>
+                    <span class="tag">Web</span>
+                </div>
+            </div>
+        </article>
+        <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek B" data-desc="Mendesain UI/UX yang responsif dan intuitif." data-tags="UI/UX,Design,CSS">
+            <img src="../webkursus/aset/Rico Show.png" alt="Thumbnail Proyek B" loading="lazy" />
+            <div class="card-content">
+                <h4 class="card-title">Proyek B</h4>
+                <p class="card-desc">Mendesain UI/UX yang responsif dan intuitif.</p>
+                <div class="card-tags">
+                    <span class="tag">UI/UX</span>
+                    <span class="tag">Design</span>
+                    <span class="tag">CSS</span>
+                </div>
+            </div>
+        </article>
+      </article>
+      <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek B" data-desc="A beautiful project showcasing the golden city with fiery sunrise" data-tags="Gold, City, Sunrise">
+          <img src="../webkursus/aset/Kota emas bara api mentari.jpg" alt="Thumbnail Proyek C" loading="lazy" />
+          <div class="card-content">
+              <h4 class="card-title">Proyek C</h4>
+              <p class="card-desc">Kota Emas Bara Api Mentari.</p>
+              <div class="card-tags">
+                  <span class="tag">Gold</span>
+                  <span class="tag">City</span>
+                  <span class="tag">Sunrise</span>
+              </div>
+          </div>
+      </article>
+        <!-- Add more cards as needed -->
+    </main>
+
+    <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+        <div id="modal-content">
+            <button id="modal-close" aria-label="Tutup modal">&times;</button>
+            <h3 id="modal-title"></h3>
+            <p id="modal-desc"></p>
+            <div id="modal-tags"></div>
+        </div>
+    </div>
+
+    <div id="cursor"></div>
+
+    <script>
+        (() => {
+            const body = document.body;
+            const profile = document.querySelector('.Edcy-profile');
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            const modalTags = document.getElementById('modal-tags');
+            const modalClose = document.getElementById('modal-close');
+            const cards = document.querySelectorAll('.card');
+            const cursor = document.getElementById('cursor');
+
+            // Dark/light mode toggle on profile click
+            profile.addEventListener('click', () => {
+                body.classList.toggle('dark');
+                localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+            });
+
+            // Load theme from localStorage or auto theme based on time
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                if (savedTheme === 'dark') body.classList.add('dark');
+                else body.classList.remove('dark');
+            } else {
+                const hour = new Date().getHours();
+                if (hour >= 19 || hour < 6) body.classList.add('dark');
+            }
+
+            // Modal open/close
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    modalTitle.textContent = card.dataset.title;
+                    modalDesc.textContent = card.dataset.desc;
+                    modalTags.innerHTML = '';
+                    card.dataset.tags.split(',').forEach(tag => {
+                        const span = document.createElement('span');
+                        span.className = 'tag';
+                        span.textContent = tag.trim();
+                        modalTags.appendChild(span);
+                    });
+                    modal.classList.add('active');
+                    card.setAttribute('aria-expanded', 'true');
+                    modalClose.focus();
+                });
+                card.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.click();
+                    }
+                });
+            });
+            modalClose.addEventListener('click', () => {
+                modal.classList.remove('active');
+                cards.forEach(card => card.setAttribute('aria-expanded', 'false'));
+                profile.focus();
+            });
+            modal.addEventListener('click', e => {
+                if (e.target === modal) {
+                    modalClose.click();
+                }
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modalClose.click();
+                }
+            });
+
+            // Custom cursor follow
+            document.addEventListener('mousemove', e => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+
+            // Starfield idle mode
+            let idleTimer;
+            let starfieldActive = false;
+            const starCount = 100;
+            const starfield = document.createElement('canvas');
+            starfield.style.position = 'fixed';
+            starfield.style.top = '0';
+            starfield.style.left = '0';
+            starfield.style.width = '100vw';
+            starfield.style.height = '100vh';
+            starfield.style.zIndex = '9998';
+            starfield.style.pointerEvents = 'none';
+            starfield.width = window.innerWidth;
+            starfield.height = window.innerHeight;
+            let stars = [];
+
+            function createStars() {
+                stars = [];
+                for (let i = 0; i < starCount; i++) {
+                    stars.push({
+                        x: Math.random() * starfield.width,
+                        y: Math.random() * starfield.height,
+                        size: Math.random() * 1.5 + 0.5,
+                        speed: Math.random() * 0.05 + 0.01,
+                        opacity: Math.random()
+                    });
+                }
+            }
+
+            function drawStars() {
+                const ctx = starfield.getContext('2d');
+                ctx.clearRect(0, 0, starfield.width, starfield.height);
+                ctx.fillStyle = 'white';
+                stars.forEach(s => {
+                    ctx.globalAlpha = s.opacity;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    s.x -= s.speed;
+                    if (s.x < 0) s.x = starfield.width;
+                });
+                ctx.globalAlpha = 1;
+            }
+
+            function startStarfield() {
+                if (starfieldActive) return;
+                starfieldActive = true;
+                document.body.appendChild(starfield);
+                createStars();
+                starfieldLoop();
+            }
+
+            function stopStarfield() {
+                if (!starfieldActive) return;
+                starfieldActive = false;
+                if (starfield.parentNode) starfield.parentNode.removeChild(starfield);
+            }
+
+            function starfieldLoop() {
+                if (!starfieldActive) return;
+                drawStars();
+                requestAnimationFrame(starfieldLoop);
+            }
+
+            function resetIdleTimer() {
+                stopStarfield();
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(startStarfield, 30000);
+            }
+            ['mousemove', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+                document.addEventListener(evt, resetIdleTimer);
+            });
+            resetIdleTimer();
+
+            // Glitch text effect on profile name
+            const glitchText = document.querySelector('.Edcy-bio h3');
+            let glitchInterval;
+
+            function glitch() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let text = glitchText.textContent;
+                let glitchTextContent = '';
+                for (let i = 0; i < text.length; i++) {
+                    if (Math.random() < 0.2) {
+                        glitchTextContent += chars.charAt(Math.floor(Math.random() * chars.length));
+                    } else {
+                        glitchTextContent += text.charAt(i);
+                    }
+                }
+                glitchText.textContent = glitchTextContent;
+            }
+
+            function startGlitch() {
+                glitchInterval = setInterval(glitch, 100);
+                setTimeout(() => {
+                    clearInterval(glitchInterval);
+                    glitchText.textContent = 'Reg & Riko';
+                }, 1000);
+            }
+            glitchText.addEventListener('mouseenter', startGlitch);
+
+        })();
+    </script>
+</body>
+
+</html>
