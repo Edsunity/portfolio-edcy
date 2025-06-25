@@ -83,17 +83,60 @@
             margin: auto;
         }
 
-        .card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
+        /* Wrapper for cards to allow glow to be visible */
+        .card-wrapper {
+            overflow: visible;
+            position: relative;
+            border-radius: 12px; /* Match card's border-radius */
         }
 
+        /* Original card styles - remove overflow:hidden */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden; /* This will clip internal content */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+            position: relative;
+        }
+
+        /* Keep all your existing card hover effects */
         .card:hover {
-            transform: translateY(-5px);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: -1;
+        }
+
+        .card:hover::before {
+            opacity: 0.1;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: 0 0 30px var(--primary);
+            opacity: 0;
+            transition: opacity var(--transition-base);
+            z-index: -1; /* Ensure it's behind the card content */
+        }
+
+        .card:hover::after {
+            opacity: 0.3;
         }
 
         footer {
@@ -210,23 +253,6 @@
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            will-change: transform;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--primary);
         }
 
         .card img {
@@ -389,20 +415,6 @@
             overflow: hidden;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: var(--primary);
-            opacity: 0;
-            transition: opacity var(--transition-base);
-            z-index: -1;
-        }
-
-        .card:hover::before {
-            opacity: 0.1;
-        }
-
         /* ====== Layout Utilities ====== */
         .grid {
             display: grid;
@@ -461,20 +473,6 @@
 
         .card:hover .card-inner {
             transform: rotateY(10deg) rotateX(5deg);
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            box-shadow: 0 0 30px var(--primary);
-            opacity: 0;
-            transition: opacity var(--transition-base);
-        }
-
-        .card:hover::after {
-            opacity: 0.3;
         }
 
         /* ====== Modern Scroll Behavior ====== */
@@ -558,44 +556,50 @@
 
     <main class="experience-grid" aria-label="Pengalaman">
         <!-- Example cards -->
-        <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek A" data-desc="Membangun aplikasi web modern dengan React dan Node.js." data-tags="React,Node.js,Web">
-            <img src="../webkursus/aset/Reg incenarator mode.jpg" alt="Thumbnail Proyek A" loading="lazy" />
-            <div class="card-content">
-                <h4 class="card-title">Proyek A</h4>
-                <p class="card-desc">Membangun aplikasi web modern dengan React dan Node.js.</p>
-                <div class="card-tags">
-                    <span class="tag">React</span>
-                    <span class="tag">Node.js</span>
-                    <span class="tag">Web</span>
+        <div class="card-wrapper">
+            <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek A" data-desc="Membangun aplikasi web modern dengan React dan Node.js." data-tags="React,Node.js,Web">
+                <img src="../webkursus/aset/Reg incenarator mode.jpg" alt="Thumbnail Proyek A" loading="lazy" />
+                <div class="card-content">
+                    <h4 class="card-title">Proyek A</h4>
+                    <p class="card-desc">Membangun aplikasi web modern dengan React dan Node.js.</p>
+                    <div class="card-tags">
+                        <span class="tag">React</span>
+                        <span class="tag">Node.js</span>
+                        <span class="tag">Web</span>
+                    </div>
                 </div>
-            </div>
-        </article>
-        <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek B" data-desc="Mendesain UI/UX yang responsif dan intuitif." data-tags="UI/UX,Design,CSS">
-            <img src="../webkursus/aset/Rico Show.png" alt="Thumbnail Proyek B" loading="lazy" />
-            <div class="card-content">
-                <h4 class="card-title">Proyek B</h4>
-                <p class="card-desc">Mendesain UI/UX yang responsif dan intuitif.</p>
-                <div class="card-tags">
-                    <span class="tag">UI/UX</span>
-                    <span class="tag">Design</span>
-                    <span class="tag">CSS</span>
+            </article>
+        </div>
+        
+        <div class="card-wrapper">
+            <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek B" data-desc="Mendesain UI/UX yang responsif dan intuitif." data-tags="UI/UX,Design,CSS">
+                <img src="../webkursus/aset/Rico Show.png" alt="Thumbnail Proyek B" loading="lazy" />
+                <div class="card-content">
+                    <h4 class="card-title">Proyek B</h4>
+                    <p class="card-desc">Mendesain UI/UX yang responsif dan intuitif.</p>
+                    <div class="card-tags">
+                        <span class="tag">UI/UX</span>
+                        <span class="tag">Design</span>
+                        <span class="tag">CSS</span>
+                    </div>
                 </div>
-            </div>
-        </article>
-      </article>
-      <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek B" data-desc="A beautiful project showcasing the golden city with fiery sunrise" data-tags="Gold, City, Sunrise">
-          <img src="../webkursus/aset/Kota emas bara api mentari.jpg" alt="Thumbnail Proyek C" loading="lazy" />
-          <div class="card-content">
-              <h4 class="card-title">Proyek C</h4>
-              <p class="card-desc">Kota Emas Bara Api Mentari.</p>
-              <div class="card-tags">
-                  <span class="tag">Gold</span>
-                  <span class="tag">City</span>
-                  <span class="tag">Sunrise</span>
-              </div>
-          </div>
-      </article>
-        <!-- Add more cards as needed -->
+            </article>
+        </div>
+        
+        <div class="card-wrapper">
+            <article class="card" tabindex="0" role="button" aria-expanded="false" aria-controls="modal-content" data-title="Proyek C" data-desc="Kota Emas Bara Api Mentari." data-tags="Gold, City, Sunrise">
+                <img src="../webkursus/aset/Kota emas bara api mentari.jpg" alt="Thumbnail Proyek C" loading="lazy" />
+                <div class="card-content">
+                    <h4 class="card-title">Proyek C</h4>
+                    <p class="card-desc">Kota Emas Bara Api Mentari.</p>
+                    <div class="card-tags">
+                        <span class="tag">Gold</span>
+                        <span class="tag">City</span>
+                        <span class="tag">Sunrise</span>
+                    </div>
+                </div>
+            </article>
+        </div>
     </main>
 
     <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
